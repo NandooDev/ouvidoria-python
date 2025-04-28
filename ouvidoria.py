@@ -11,6 +11,7 @@ while(True):
             if (email.count("@") == 1):
                 break
     telefone = str(input("Qual seu telefone?\n"))
+    endereco = str(input("Qual seu endereço?\n"))
     assMani = int(input(textoAssun))
     if (assMani != 1 and assMani != 2 and assMani != 3):
         while(True):
@@ -20,10 +21,10 @@ while(True):
                 break
     mani = str(input("Descreva sua manifestação:\n"))
 
-    manifestações.append([nome, email, telefone, assMani, mani])
+    manifestações.append([nome, email, telefone, endereco, assMani, mani])
 
     print(f"--------Manifestações Ativas--------")
+    print(f"Quantidade de Manisfestações Ativas: {len(manifestações)}")
     for i in manifestações:
-        print(f"Quantidade de Manisfestações Ativas: {len(manifestações)}")
-        print(f"Nome: {i[0]}\nEmail: {i[1]}\nTelefone: {i[2]}\nAssunto: {i[3]}\nDescrição: {i[4]}")
+        print(f"Nome: {i[0]}\nEmail: {i[1]}\nTelefone: {i[2]}\nEndereço: {i[3]}\nAssunto: {i[4]}\nDescrição: {i[5]}\nStatus: Aberto\nSituação: Não respondida")
         print("-------------------------------------")
