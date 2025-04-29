@@ -1,5 +1,5 @@
+import json
 textoAssun = ("Digite o número referente ao assunto que você deseja falar:\n-Elogio: 1\n-Denúncia: 2\n-Dúvida: 3\n")
-manifestações = []
 
 while(True):
     nome = str(input("Qual o seu nome?\n"))
@@ -21,10 +21,13 @@ while(True):
                 break
     mani = str(input("Descreva sua manifestação:\n"))
 
-    manifestações.append([nome, email, telefone, endereco, assMani, mani])
+    manifestações = [nome, email, telefone, endereco, assMani, mani]
 
     print(f"--------Manifestações Ativas--------")
     print(f"Quantidade de Manisfestações Ativas: {len(manifestações)}")
     for i in manifestações:
-        print(f"Nome: {i[0]}\nEmail: {i[1]}\nTelefone: {i[2]}\nEndereço: {i[3]}\nAssunto: {i[4]}\nDescrição: {i[5]}\nStatus: Aberto\nSituação: Não respondida")
+        print(f"Nome: {i}\nEmail: {i}\nTelefone: {i}\nEndereço: {i}\nAssunto: {i}\nDescrição: {i}\nStatus: Aberto\nSituação: Não respondida")
         print("-------------------------------------")
+
+    with open("manifestacoes.json", "a") as manifestacoes_json:
+        json.dump(manifestações, manifestacoes_json, indent=4)
