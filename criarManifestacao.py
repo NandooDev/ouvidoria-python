@@ -7,32 +7,15 @@ cursor = db.cursor()
 
 textoAssun = ("Digite o número referente ao assunto que você deseja falar:\n-Elogio: 1\n-Denúncia: 2\n-Dúvida: 3\n")
 
-user = ()
-
 print("-----------Entrar No Sistema-----------")
 
+#LOGIN OU CADASTRO DE USUARIO
 while(True):
     loginOrRegister = str(input("Realizar cadastro ou fazer login? (c ou l) "))
     
-        
     if (loginOrRegister == "c"):
-        nome = str(input("Qual o seu nome?\n"))
         
-        email = str(input("Qual seu email?\n"))
-        if (email.count("@") == 0 or email.count("@") > 1):
-            while(True):
-                email = str(input("Por favor digite um email válido:\n"))
-
-                if (email.count("@") == 1):
-                    break
-                    
-        telefone = str(input("Qual seu telefone?\n"))
-            
-        endereco = str(input("Qual seu endereço?\n"))
-            
-        senha = str(input("Digite sua senha de acesso:\n"))
-        
-        register = loginCadastroUser.cadastro(nome, email, telefone, endereco, senha)
+        register = loginCadastroUser.cadastro()
         
         if (register == "Email Already Exists"):
             print("Email já existe, tentar novamente!")
@@ -41,25 +24,15 @@ while(True):
             print("Telefone já existe, por favor tentar novamente!")
             continue
         elif (len(register) > 0):
-            id, nome, email, telefone, endereco, senha, tipo = login
+            id, nome, email, telefone, endereco, senha, tipo = register
             print("Cadastro realizado com sucesso!")
             break
         else:
             print("Houve algum erro inesperado, por favor tentar novamente!")
             continue
     
-    elif (loginOrRegister == "l"):
-        email = str(input("Qual seu email?\n"))
-        if (email.count("@") == 0 or email.count("@") > 1):
-            while(True):
-                email = str(input("Por favor digite um email válido:\n"))
-
-                if (email.count("@") == 1):
-                    break
-                
-        senha = str(input("Digite sua senha de acesso:\n"))
-                
-        login = loginCadastroUser.login(email, senha)
+    elif (loginOrRegister == "l"):                
+        login = loginCadastroUser.login()
         
         if (login == "User Not Exists"):
             print("Usuário não existe, por favor realizar cadastro!")
@@ -75,6 +48,7 @@ while(True):
             print("Houve algum erro inesperado ao entrar, por favor tente novamente!")
             continue
     
+#CRIAR MANIFESTAÇÃO
 while(True):
     print("-----------Criar Solicitação-----------")
     
@@ -92,7 +66,7 @@ while(True):
         INSERT INTO manifestacoes
         (nome, email, telefone, endereco, assuntoManifestacao, descricao, statuss, situacao)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (nome, email, telefone, endereco, assMani, mani, 'Aberta', 'nao respondida'))
+        """, (nome, email, telefone, endereco, assMani, mani, 'Aberta', 'Não respondida'))
 
     db.commit()
     

@@ -5,7 +5,20 @@ db = sqlite3.connect("manifestacoes.db")
 
 cursor = db.cursor()
 
-def login(email, senha):
+def login():
+    #DADOS
+    email = str(input("Qual seu email?\n"))
+    if (email.count("@") == 0 or email.count("@") > 1):
+        while(True):
+            email = str(input("Por favor digite um email válido:\n"))
+
+            if (email.count("@") == 1):
+                break
+                
+    senha = str(input("Digite sua senha de acesso:\n"))
+    
+    #VERIFICACOES
+    
     cursor.execute("SELECT senha FROM users WHERE email = ?", (email,))
     
     user = cursor.fetchall()
@@ -24,7 +37,26 @@ def login(email, senha):
         else:
             return "Password Invalid"
     
-def cadastro(nome, email, telefone, endereco, senha):
+def cadastro(tipo="user"):
+    #DADOS
+    nome = str(input("Qual o seu nome?\n"))
+        
+    email = str(input("Qual seu email?\n"))
+    if (email.count("@") == 0 or email.count("@") > 1):
+        while(True):
+            email = str(input("Por favor digite um email válido:\n"))
+
+            if (email.count("@") == 1):
+                    break
+                    
+    telefone = str(input("Qual seu telefone?\n"))
+            
+    endereco = str(input("Qual seu endereço?\n"))
+            
+    senha = str(input("Digite sua senha de acesso:\n"))
+    
+    #VERIFICACOES
+    
     cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
     
     emailAlreadyExists = cursor.fetchall()
@@ -43,10 +75,9 @@ def cadastro(nome, email, telefone, endereco, senha):
             
             cursor.execute("""
                     INSERT INTO users
-                    (nome, email, telefone, endereco, senha)
-                    VALUES (?,?,?,?,?)
-                    """, (nome, email, telefone, endereco, hashSenha))
-            
+                    (nome, email, telefone, endereco, senha, tipo)
+                    VALUES (?,?,?,?,?,?)
+                    """, (nome, email, telefone, endereco, hashSenha, tipo))            
             
             cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
             
