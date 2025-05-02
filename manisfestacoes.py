@@ -1,17 +1,22 @@
-import json
+import sqlite3
+
+db = sqlite3.connect('manifestacoes.db')
+
+cursor = db.cursor()
 
 while(True):
     if (str(input("Deseja ver as manifestações? (s ou n) ")) == "s"):
-        with open("manifestacoes.json", "r", encoding="latin1") as manifestacoes_json:
-            manifestacoes = json.load(manifestacoes_json)
-            
+        cursor.execute("SELECT * FROM manifestacoes")
+        
+        manifestacoes = cursor.fetchall()
+        
+        db.commit()    
+        
         print(f"--------Manifestações Ativas--------")
         print(f"Quantidade de Manisfestações Ativas: {len(manifestacoes)}")
-        
-        print(manifestacoes)
 
         for i in range(len(manifestacoes)):
-            print(f"Nome: {manifestacoes[i]['Nome']}\nEmail: {manifestacoes[i]['Email']}\nTelefone: {manifestacoes[i]['Telefone']}\nEndereço: {manifestacoes[i]['Endereço']}\nAssunto: {manifestacoes[i]['Assunto']}\nDescrição: {manifestacoes[i]['Descrição']}\nStatus: {manifestacoes[i]['Status']}\nSituação: {manifestacoes[i]['Situação']}")
+            print(f"Código: {manifestacoes[i][0]}\nNome: {manifestacoes[i][1]}\nEmail: {manifestacoes[i][2]}\nTelefone: {manifestacoes[i][3]}\nEndereço: {manifestacoes[i][4]}\nAssunto: {manifestacoes[i][5]}\nDescrição: {manifestacoes[i][6]}\nStatus: {manifestacoes[i][7]}\nSituação: {manifestacoes[i][8]}")
             print("-------------------------------------")
     else:
         break
