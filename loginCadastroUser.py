@@ -6,8 +6,19 @@ db = sqlite3.connect("manifestacoes.db")
 cursor = db.cursor()
 
 def login(email, senha):
-        print("Login")
+    cursor.execute("SELECT senha FROM users WHERE email = ?", (email,))
     
+    user = cursor.fetchall()
+    
+    if (len(user) == 0):
+        return "User Not Exists"
+    else:
+        senhaValida = bcrypt.checkpw(senha.encode(), user[0][0])
+        
+        if (senhaValida):
+            return "Login Successful"
+        else:
+            return "Password Invalid"
     
 def cadastro(nome, email, telefone, endereco, senha):
     cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
