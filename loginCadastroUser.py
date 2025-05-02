@@ -16,7 +16,11 @@ def login(email, senha):
         senhaValida = bcrypt.checkpw(senha.encode(), user[0][0])
         
         if (senhaValida):
-            return "Login Successful"
+            cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+            
+            dados = cursor.fetchall()
+            
+            return (dados[0])
         else:
             return "Password Invalid"
     
@@ -43,6 +47,11 @@ def cadastro(nome, email, telefone, endereco, senha):
                     VALUES (?,?,?,?,?)
                     """, (nome, email, telefone, endereco, hashSenha))
             
+            
+            cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+            
+            dados = cursor.fetchall()
+            
             db.commit()
             
-            return "Registration Successful"
+            return (dados[0])

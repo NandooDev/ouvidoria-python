@@ -1,25 +1,82 @@
 import sqlite3
+import loginCadastroUser
 
 db = sqlite3.connect('manifestacoes.db')
 
+cursor = db.cursor()
+
 textoAssun = ("Digite o número referente ao assunto que você deseja falar:\n-Elogio: 1\n-Denúncia: 2\n-Dúvida: 3\n")
 
+user = ()
+
+print("-----------Entrar No Sistema-----------")
+
+while(True):
+    loginOrRegister = str(input("Realizar cadastro ou fazer login? (c ou l) "))
+    
+        
+    if (loginOrRegister == "c"):
+        nome = str(input("Qual o seu nome?\n"))
+        
+        email = str(input("Qual seu email?\n"))
+        if (email.count("@") == 0 or email.count("@") > 1):
+            while(True):
+                email = str(input("Por favor digite um email válido:\n"))
+
+                if (email.count("@") == 1):
+                    break
+                    
+        telefone = str(input("Qual seu telefone?\n"))
+            
+        endereco = str(input("Qual seu endereço?\n"))
+            
+        senha = str(input("Digite sua senha de acesso:\n"))
+        
+        register = loginCadastroUser.cadastro(nome, email, telefone, endereco, senha)
+        
+        if (register == "Email Already Exists"):
+            print("Email já existe, tentar novamente!")
+            continue
+        elif (register == "Telefone Already Exists"):
+            print("Telefone já existe, por favor tentar novamente!")
+            continue
+        elif (len(register) > 0):
+            id, nome, email, telefone, endereco, senha, tipo = login
+            print("Cadastro realizado com sucesso!")
+            break
+        else:
+            print("Houve algum erro inesperado, por favor tentar novamente!")
+            continue
+    
+    elif (loginOrRegister == "l"):
+        email = str(input("Qual seu email?\n"))
+        if (email.count("@") == 0 or email.count("@") > 1):
+            while(True):
+                email = str(input("Por favor digite um email válido:\n"))
+
+                if (email.count("@") == 1):
+                    break
+                
+        senha = str(input("Digite sua senha de acesso:\n"))
+                
+        login = loginCadastroUser.login(email, senha)
+        
+        if (login == "User Not Exists"):
+            print("Usuário não existe, por favor realizar cadastro!")
+            continue
+        elif (login == "Password Invalid"):
+            print("Senha inválida, por favor tentar novamente!")
+            continue
+        elif (len(login) > 0):
+            id, nome, email, telefone, endereco, senha, tipo = login
+            print("Login realizado com sucesso!")
+            break
+        else:
+            print("Houve algum erro inesperado ao entrar, por favor tente novamente!")
+            continue
+    
 while(True):
     print("-----------Criar Solicitação-----------")
-    
-    nome = str(input("Qual o seu nome?\n"))
-    
-    email = str(input("Qual seu email?\n"))
-    if (email.count("@") == 0 or email.count("@") > 1):
-        while(True):
-            email = str(input("Por favor digite um email válido:\n"))
-
-            if (email.count("@") == 1):
-                break
-            
-    telefone = str(input("Qual seu telefone?\n"))
-    
-    endereco = str(input("Qual seu endereço?\n"))
     
     assMani = int(input(textoAssun))
     if (assMani != 1 and assMani != 2 and assMani != 3):
@@ -31,11 +88,11 @@ while(True):
             
     mani = str(input("Descreva sua manifestação:\n"))
     
-    db.execute("""
+    cursor.execute("""
         INSERT INTO manifestacoes
         (nome, email, telefone, endereco, assuntoManifestacao, descricao, statuss, situacao)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (nome, email, telefone, endereco, assMani, mani, 'Aberta', 'nao resp'))
+        """, (nome, email, telefone, endereco, assMani, mani, 'Aberta', 'nao respondida'))
 
     db.commit()
     
