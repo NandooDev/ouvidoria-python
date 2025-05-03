@@ -1,44 +1,22 @@
-import loginCadastroUser
 import sqlite3
 
-db = sqlite3.connect("manifestacoes.db")
+db = sqlite3.connect('manifestacoes.db')
 
 cursor = db.cursor()
 
 while(True):
-    loginOrRegister = str(input("Realizar cadastro ou fazer login? (c ou l) "))
-    
-    if (loginOrRegister == "c"):
+    if (str(input("Deseja ver as respostas realizadas? (s ou n) ")) == "s"):
+        cursor.execute("SELECT * FROM respostas")
         
-        register = loginCadastroUser.cadastro("adm")
+        respostas = cursor.fetchall()
         
-        if (register == "Email Already Exists"):
-            print("Email já existe, tentar novamente!")
-            continue
-        elif (register == "Telefone Already Exists"):
-            print("Telefone já existe, por favor tentar novamente!")
-            continue
-        elif (len(register) > 0):
-            id, nome, email, telefone, endereco, senha, tipo = register
-            print("Cadastro realizado com sucesso!")
-            break
-        else:
-            print("Houve algum erro inesperado, por favor tentar novamente!")
-            continue
-    
-    elif (loginOrRegister == "l"):                
-        login = loginCadastroUser.login()
+        db.commit()    
         
-        if (login == "User Not Exists"):
-            print("Usuário não existe, por favor realizar cadastro!")
-            continue
-        elif (login == "Password Invalid"):
-            print("Senha inválida, por favor tentar novamente!")
-            continue
-        elif (len(login) > 0):
-            id, nome, email, telefone, endereco, senha, tipo = login
-            print("Login realizado com sucesso!")
-            break
-        else:
-            print("Houve algum erro inesperado ao entrar, por favor tente novamente!")
-            continue
+        print(f"--------Respostas Realizadas--------")
+        print(f"Quantidade de Respostas Realizadas: {len(respostas)}")
+
+        for i in range(len(respostas)):
+            print(f"Código: {respostas[i][0]}\nCódigo da Manifestação: {respostas[i][1]}\nNome do Atendente: {respostas[i][2]}\nEmail do Atendente: {respostas[i][3]}\nResposta: {respostas[i][4]}\nData e Hora: {respostas[i][5]}")
+            print("-------------------------------------")
+    else:
+        break

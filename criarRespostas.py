@@ -1,21 +1,16 @@
-import sqlite3
 import loginCadastroUser
+import sqlite3
 
-db = sqlite3.connect('manifestacoes.db')
+db = sqlite3.connect("manifestacoes.db")
 
 cursor = db.cursor()
 
-textoAssun = ("Digite o número referente ao assunto que você deseja falar:\n-Elogio: 1\n-Denúncia: 2\n-Dúvida: 3\n")
-
-print("-----------Entrar No Sistema-----------")
-
-#LOGIN OU CADASTRO DE USUARIO
 while(True):
     loginOrRegister = str(input("Realizar cadastro ou fazer login? (c ou l) "))
     
     if (loginOrRegister == "c"):
         
-        register = loginCadastroUser.cadastro()
+        register = loginCadastroUser.cadastro("adm")
         
         if (register == "Email Already Exists"):
             print("Email já existe, tentar novamente!")
@@ -47,27 +42,24 @@ while(True):
         else:
             print("Houve algum erro inesperado ao entrar, por favor tente novamente!")
             continue
-    
-#CRIAR MANIFESTAÇÃO
+        
 while(True):
-    print("-----------Criar Solicitação-----------")
+    codigo_manifestacao = int(input("Qual o código da manifestação que você deseja responder? "))
     
-    assMani = int(input(textoAssun))
-    if (assMani != 1 and assMani != 2 and assMani != 3):
-        while(True):
-            assMani = int(input("Por favor digite uma opção válida:\n"))
-
-            if (assMani == 1 or assMani == 2 or assMani == 3):
-                break
-            
-    mani = str(input("Descreva sua manifestação:\n"))
+    resposta = str(input("Qual sua resposta para essa manifestação?\n"))
     
     cursor.execute("""
-        INSERT INTO manifestacoes
-        (nome, email, telefone, endereco, assuntoManifestacao, descricao, statuss, situacao)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (nome, email, telefone, endereco, assMani, mani, 'Aberta', 'Não respondida'))
-
+            INSERT INTO respostas
+            (codigo_manifestacao, nome_atendente, email_atendente, resposta)
+            VALUES (?,?,?,?)
+            """, (codigo_manifestacao, nome, email, resposta))
+    
+    cursor.execute("""
+            UPDATE manifestacoes
+            SET statuss = "Fechada", situacao = "Respondida"
+            WHERE id = ?
+            """, (codigo_manifestacao,))
+    
     db.commit()
     
-    print("Manifestação criada com sucesso, aguarde sua resposta!")
+    print("Resposta realizada!")
