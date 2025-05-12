@@ -44,8 +44,19 @@ while(True):
             continue
         
 while(True):
-    codigo_manifestacao = int(input("Qual o código da manifestação que você deseja responder? "))
     
+    while(True):
+        codigo_manifestacao = int(input("Qual o código da manifestação que você deseja responder? "))
+
+        cursor.execute("SELECT * FROM manifestacoes WHERE id = ?", (codigo_manifestacao,))
+        
+        manifestacaoExist = len(cursor.fetchall())
+        if (manifestacaoExist > 0):
+            break
+        else:
+            print("Essa manifestação não existe, digite uma manifestação válida!")
+            continue
+
     resposta = str(input("Qual sua resposta para essa manifestação?\n"))
     
     cursor.execute("""
