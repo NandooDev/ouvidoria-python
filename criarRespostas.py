@@ -72,5 +72,3 @@ while(True):
             """, (codigo_manifestacao,))
     
     db.commit()
-    
-    print("Resposta realizada!")
