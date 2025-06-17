@@ -1,16 +1,15 @@
-import sqlite3
-
-db = sqlite3.connect('manifestacoes.db')
-
-cursor = db.cursor()
+from conexaobd import *
+from operacoesbd import listarBancoDados, encerrarConexao
 
 while(True):
-    if (str(input("Deseja ver as manifestações? (s ou n) ")) == "s"):
-        cursor.execute("SELECT * FROM manifestacoes")
+    if (str(input("Deseja ver as manifestações? (s ou n) ")) == "s"):        
+        conexao = conexaobd()
         
-        manifestacoes = cursor.fetchall()
+        consulta = "SELECT * FROM manifestacoes"
         
-        db.commit()    
+        manifestacoes = listarBancoDados(conexao, consulta)
+        
+        encerrarConexao(conexao)
         
         print(f"--------Manifestações Ativas--------")
         print(f"Quantidade de Manisfestações Ativas: {len(manifestacoes)}")

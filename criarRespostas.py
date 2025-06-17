@@ -1,9 +1,6 @@
 import loginCadastroUser
-import sqlite3
-
-db = sqlite3.connect("manifestacoes.db")
-
-cursor = db.cursor()
+from conexaobd import *
+from operacoesbd import insertNoBancoDados, listarBancoDados, atualizarBancoDados, encerrarConexao
 
 while(True):
     loginOrRegister = str(input("Realizar cadastro ou fazer login? (c ou l) "))
@@ -43,32 +40,50 @@ while(True):
             print("Houve algum erro inesperado ao entrar, por favor tente novamente!")
             continue
         
-while(True):
-    
-    while(True):
-        codigo_manifestacao = int(input("Qual o código da manifestação que você deseja responder? "))
+respostaOuSair = 0
 
-        cursor.execute("SELECT * FROM manifestacoes WHERE id = ?", (codigo_manifestacao,))
+while(respostaOuSair != 2):
+    
+    respostaOuSair = int(input("1 - Realizar Respostas\n2 - Sair\n"))
         
-        manifestacaoExist = len(cursor.fetchall())
-        if (manifestacaoExist > 0):
-            break
-        else:
-            print("Essa manifestação não existe, digite uma manifestação válida!")
-            continue
+    if respostaOuSair == 1:
+        conexao = conexaobd()
+    
+        while(True):
+            codigo_manifestacao = int(input("Qual o código da manifestação que você deseja responder? \n"))
 
-    resposta = str(input("Qual sua resposta para essa manifestação?\n"))
-    
-    cursor.execute("""
-            INSERT INTO respostas
-            (codigo_manifestacao, nome_atendente, email_atendente, resposta)
-            VALUES (?,?,?,?)
-            """, (codigo_manifestacao, nome, email, resposta))
-    
-    cursor.execute("""
-            UPDATE manifestacoes
-            SET statuss = "Fechada", situacao = "Respondida"
-            WHERE id = ?
-            """, (codigo_manifestacao,))
-    
-    db.commit()
+            consulta = "SELECT * FROM manifestacoes WHERE id = %s"
+            
+            manifestacaoExist = listarBancoDados(conexao, consulta, [codigo_manifestacao])
+            
+            if (len(manifestacaoExist) > 0):
+                break
+            else:
+                print("Essa manifestação não existe, digite uma manifestação válida!\n")
+                continue
+
+        resposta = str(input("Qual sua resposta para essa manifestação?\n"))
+        
+        consulta = """
+                INSERT INTO respostas
+                (codigo_manifestacao, nome_atendente, email_atendente, resposta)
+                VALUES (%s,%s,%s,%s)
+                """
+        
+        dados = [codigo_manifestacao, nome, email, resposta]
+        
+        insertNoBancoDados(conexao, consulta, dados)
+        
+        consulta = """
+                UPDATE manifestacoes
+                SET statuss = "Fechada", situacao = "Respondida"
+                WHERE id = %s
+                """
+        
+        atualizarBancoDados(conexao, consulta, [codigo_manifestacao])
+        
+        encerrarConexao(conexao)
+        
+        print("Resposta Realizada Com Sucesso!")
+
+print("Programa Finalizado Com Sucesso!")

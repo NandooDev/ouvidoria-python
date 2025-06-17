@@ -1,9 +1,7 @@
-import sqlite3
 import loginCadastroUser
-
-db = sqlite3.connect('manifestacoes.db')
-
-cursor = db.cursor()
+from excluirManifestacao import *
+from conexaobd import *
+from operacoesbd import insertNoBancoDados, encerrarConexao
 
 textoAssun = ("Digite o número referente ao assunto que você deseja falar:\n-Elogio: 1\n-Denúncia: 2\n-Dúvida: 3\n")
 
@@ -49,25 +47,44 @@ while(True):
             continue
     
 #CRIAR MANIFESTAÇÃO
-while(True):
-    print("-----------Criar Solicitação-----------")
-    
-    assMani = int(input(textoAssun))
-    if (assMani != 1 and assMani != 2 and assMani != 3):
-        while(True):
-            assMani = int(input("Por favor digite uma opção válida:\n"))
+excluirOuCriar = 0
 
-            if (assMani == 1 or assMani == 2 or assMani == 3):
-                break
+while(excluirOuCriar != 3):
+    excluirOuCriar = int(input("1 - Criar Manifestação\n2 - Excluir Manifestação\n3 - Sair\n"))
+    
+    if excluirOuCriar == 1:
+        print("\n-----------Criar Solicitação-----------\n")
+        
+        assMani = int(input(textoAssun))
+        if (assMani != 1 and assMani != 2 and assMani != 3):
+            while(True):
+                assMani = int(input("Por favor digite uma opção válida:\n"))
+
+                if (assMani == 1 or assMani == 2 or assMani == 3):
+                    break
+                
+        mani = str(input("Descreva sua manifestação:\n"))
+        
+        conexao = conexaobd()
             
-    mani = str(input("Descreva sua manifestação:\n"))
+        consulta = """
+            INSERT INTO manifestacoes
+            (nome, email, telefone, endereco, assuntoManifestacao, descricao, statuss, situacao)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            
+        dados = [nome, email, telefone, endereco, assMani, mani, 'Aberta', 'Não respondida']
+            
+        manifestacao = insertNoBancoDados(conexao, consulta, dados)
+            
+        encerrarConexao(conexao)
+        
+        print("Manifestação criada com sucesso, aguarde sua resposta!")
     
-    cursor.execute("""
-        INSERT INTO manifestacoes
-        (nome, email, telefone, endereco, assuntoManifestacao, descricao, statuss, situacao)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (nome, email, telefone, endereco, assMani, mani, 'Aberta', 'Não respondida'))
+    elif excluirOuCriar == 2:
+        excluirManifestacao()
+    
+    else:
+        print("Opção Inválida!\n")
 
-    db.commit()
-    
-    print("Manifestação criada com sucesso, aguarde sua resposta!")
+print("Programa Finalizado, Volte Sempre!")

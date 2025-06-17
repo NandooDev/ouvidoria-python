@@ -1,16 +1,15 @@
-import sqlite3
-
-db = sqlite3.connect('manifestacoes.db')
-
-cursor = db.cursor()
+from conexaobd import *
+from operacoesbd import listarBancoDados, encerrarConexao
 
 while(True):
     if (str(input("Deseja ver as respostas realizadas? (s ou n) ")) == "s"):
-        cursor.execute("SELECT * FROM respostas")
+        conexao = conexaobd()
         
-        respostas = cursor.fetchall()
+        consulta = "SELECT * FROM manifestacoes"
         
-        db.commit()    
+        respostas = listarBancoDados(conexao, consulta)
+        
+        encerrarConexao(conexao)
         
         print(f"--------Respostas Realizadas--------")
         print(f"Quantidade de Respostas Realizadas: {len(respostas)}")

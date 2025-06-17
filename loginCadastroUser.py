@@ -1,11 +1,10 @@
 import bcrypt
-import sqlite3
-
-db = sqlite3.connect("manifestacoes.db")
-
-cursor = db.cursor()
+from conexaobd import *
+from operacoesbd import listarBancoDados, insertNoBancoDados, encerrarConexao
 
 def login():
+    conexao = conexaobd()
+    
     #DADOS
     email = str(input("Qual seu email?\n"))
     if (email.count("@") == 0 or email.count("@") > 1):
@@ -18,26 +17,32 @@ def login():
     senha = str(input("Digite sua senha de acesso:\n"))
     
     #VERIFICACOES
+    consulta = "SELECT senha FROM users WHERE email = %s"
     
-    cursor.execute("SELECT senha FROM users WHERE email = ?", (email,))
+    emailAlreadyExists = listarBancoDados(conexao, consulta, [email])
     
-    user = cursor.fetchall()
-    
-    if (len(user) == 0):
+    if (len(emailAlreadyExists) == 0):
         return "User Not Exists"
     else:
-        senhaValida = bcrypt.checkpw(senha.encode(), user[0][0])
+        senhaValida = bcrypt.checkpw(senha.encode(), emailAlreadyExists[0][0].encode())
         
         if (senhaValida):
-            cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+            consulta = "SELECT * FROM users WHERE email = %s"
             
-            dados = cursor.fetchall()
+            user = listarBancoDados(conexao, consulta, [email])
             
-            return (dados[0])
+            encerrarConexao(conexao)
+            
+            return (user[0])
         else:
+            encerrarConexao(conexao)
+            
             return "Password Invalid"
     
+    
 def cadastro(tipo="user"):
+    conexao = conexaobd()
+    
     #DADOS
     nome = str(input("Qual o seu nome?\n"))
         
@@ -57,32 +62,36 @@ def cadastro(tipo="user"):
     
     #VERIFICACOES
     
-    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+    consulta = "SELECT senha FROM users WHERE email = %s"
     
-    emailAlreadyExists = cursor.fetchall()
+    emailAlreadyExists = listarBancoDados(conexao, consulta, [email])
     
     if (len(emailAlreadyExists) > 0):
         return "Email Already Exists"
     else:
-        cursor.execute("SELECT * FROM users WHERE telefone = ?", (telefone,))
+        consulta = "SELECT * FROM users WHERE telefone = %s"
         
-        telefoneAlreadyExists = cursor.fetchall()
+        telefoneAlreadyExists = listarBancoDados(conexao, consulta, [telefone])
         
         if (len(telefoneAlreadyExists) > 0):
             return "Telefone Already Exists"
         else:
             hashSenha = bcrypt.hashpw(senha.encode(), bcrypt.gensalt())
             
-            cursor.execute("""
+            consulta = """
                     INSERT INTO users
                     (nome, email, telefone, endereco, senha, tipo)
-                    VALUES (?,?,?,?,?,?)
-                    """, (nome, email, telefone, endereco, hashSenha, tipo))            
+                    VALUES (%s,%s,%s,%s,%s,%s)
+                    """        
+                    
+            dados = [nome, email, telefone, endereco, hashSenha, tipo]
+                
+            insertNoBancoDados(conexao, consulta, dados)  
             
-            cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+            consulta = "SELECT * FROM users WHERE email = %s"
             
-            dados = cursor.fetchall()
+            user = listarBancoDados(conexao, consulta, [email])
+                        
+            encerrarConexao(conexao)
             
-            db.commit()
-            
-            return (dados[0])
+            return (user[0])

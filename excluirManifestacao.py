@@ -1,23 +1,20 @@
-import sqlite3
+from conexaobd import *
+from operacoesbd import excluirBancoDados, encerrarConexao
 
-db = sqlite3.connect("manifestacoes.db")
+def excluirManifestacao(): 
+    buscarManifestacaoPorCodigo = int(input("\nQual o código da manifestação que você deseja excluir? Ex(1, 2, 3...) "))
 
-cursor = db.cursor()
+    conexao = conexaobd()
+            
+    consulta = "DELETE FROM manifestacoes WHERE id = %s"
+            
+    linhasAfetadas = excluirBancoDados(conexao, consulta, [buscarManifestacaoPorCodigo])
 
-escolha = 0
-
-while escolha != 2:
-    escolha = int(input("1 - Excluir manifestação por código\n2 - Sair\n"))
-    
-    if escolha == 1:
-        buscarManifestacaoPorCodigo = int(input("\nQual o código da manifestação que você deseja excluir? Ex(1, 2, 3...) "))
-
-        cursor.execute("DELETE FROM manifestacoes WHERE id = ?", (buscarManifestacaoPorCodigo,))
-        db.commit()  
-
-        if cursor.rowcount > 0:
-            print("Manifestação excluída com sucesso!")
-        else:
-            print("Manifestação não encontrada!")
-
-print("Programa finalizado!")
+    if linhasAfetadas > 0:
+        print("Manifestação excluída com sucesso!")
+    elif linhasAfetadas == 0:
+        print("Manifestação não encontrada!")
+    else:
+        print("Manifestação não encontrada!")
+                
+    encerrarConexao(conexao)

@@ -1,8 +1,5 @@
-import sqlite3
-
-db = sqlite3.connect("manifestacoes.db")
-
-cursor = db.cursor()
+from conexaobd import *
+from operacoesbd import listarBancoDados, encerrarConexao
 
 escolha = 0
 
@@ -12,10 +9,14 @@ while escolha != 2:
     
     if escolha == 1:
         buscarManifestacaoPorCodigo = int(input("\nQual o código da manifestação que você deseja buscar? Ex(1, 2, 3...) "))
+
+        conexao = conexaobd()
         
-        cursor.execute("SELECT * FROM manifestacoes WHERE id = ?", (buscarManifestacaoPorCodigo,))
+        consulta = "SELECT * FROM manifestacoes WHERE id = %s"
         
-        manifestacao = cursor.fetchall()
+        manifestacao = listarBancoDados(conexao, consulta, [buscarManifestacaoPorCodigo])
+        
+        encerrarConexao(conexao)
                 
         if manifestacao == []:
             print("Manifestação não existe!\n")
