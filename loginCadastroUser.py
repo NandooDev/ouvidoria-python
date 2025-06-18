@@ -6,7 +6,7 @@ def login():
     conexao = conexaobd()
     
     #DADOS
-    email = str(input("Qual seu email?\n"))
+    email = str(input("\nQual seu email? "))
     if (email.count("@") == 0 or email.count("@") > 1):
         while(True):
             email = str(input("Por favor digite um email válido:\n"))
@@ -14,7 +14,7 @@ def login():
             if (email.count("@") == 1):
                 break
                 
-    senha = str(input("Digite sua senha de acesso:\n"))
+    senha = str(input("\nDigite sua senha de acesso: "))
     
     #VERIFICACOES
     consulta = "SELECT senha FROM users WHERE email = %s"
@@ -44,9 +44,9 @@ def cadastro(tipo="user"):
     conexao = conexaobd()
     
     #DADOS
-    nome = str(input("Qual o seu nome?\n"))
+    nome = str(input("\nQual o seu nome? "))
         
-    email = str(input("Qual seu email?\n"))
+    email = str(input("\nQual seu email? "))
     if (email.count("@") == 0 or email.count("@") > 1):
         while(True):
             email = str(input("Por favor digite um email válido:\n"))
@@ -54,11 +54,11 @@ def cadastro(tipo="user"):
             if (email.count("@") == 1):
                     break
                     
-    telefone = str(input("Qual seu telefone?\n"))
+    telefone = str(input("\nQual seu telefone? "))
             
-    endereco = str(input("Qual seu endereço?\n"))
+    endereco = str(input("\nQual seu endereço? "))
             
-    senha = str(input("Digite sua senha de acesso:\n"))
+    senha = str(input("\nDigite sua senha de acesso: "))
     
     #VERIFICACOES
     

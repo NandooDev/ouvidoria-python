@@ -1,56 +1,70 @@
 import loginCadastroUser
+from manisfestacoes import *
+from respostas import *
 from conexaobd import *
 from operacoesbd import insertNoBancoDados, listarBancoDados, atualizarBancoDados, encerrarConexao
 
+print("-----------ENTRAR NO SISTEMA-----------")
+
 while(True):
     loginOrRegister = str(input("Realizar cadastro ou fazer login? (c ou l) "))
+    
+    loginOrRegister = loginOrRegister.lower()
     
     if (loginOrRegister == "c"):
         
         register = loginCadastroUser.cadastro("adm")
         
         if (register == "Email Already Exists"):
-            print("Email já existe, tentar novamente!")
+            print("Email já existe, tentar novamente!\n")
             continue
         elif (register == "Telefone Already Exists"):
-            print("Telefone já existe, por favor tentar novamente!")
+            print("Telefone já existe, por favor tentar novamente!\n")
             continue
         elif (len(register) > 0):
             id, nome, email, telefone, endereco, senha, tipo, created = register
-            print("Cadastro realizado com sucesso!")
+            print("Cadastro realizado com sucesso!\n")
             break
         else:
-            print("Houve algum erro inesperado, por favor tentar novamente!")
+            print("Houve algum erro inesperado, por favor tentar novamente!\n")
             continue
     
     elif (loginOrRegister == "l"):                
         login = loginCadastroUser.login()
         
         if (login == "User Not Exists"):
-            print("Usuário não existe, por favor realizar cadastro!")
+            print("Usuário não existe, por favor realizar cadastro!\n")
             continue
         elif (login == "Password Invalid"):
-            print("Senha inválida, por favor tentar novamente!")
+            print("Senha inválida, por favor tentar novamente!\n")
             continue
         elif (len(login) > 0):
             id, nome, email, telefone, endereco, senha, tipo, created = login
-            print("Login realizado com sucesso!")
-            break
+
+            if tipo != "adm":
+                print("ACESSO NEGADO, VOCÊ NÃO É UM ADM\n")
+                continue
+            else:
+                print("Login realizado com sucesso!\n")
+                break
         else:
-            print("Houve algum erro inesperado ao entrar, por favor tente novamente!")
+            print("Houve algum erro inesperado ao entrar, por favor tente novamente!\n")
             continue
         
-respostaOuSair = 0
-
-while(respostaOuSair != 2):
-    
-    respostaOuSair = int(input("1 - Realizar Respostas\n2 - Sair\n"))
+    else:
+        print("\nOPÇÃO INVÁLIDA\n")
         
-    if respostaOuSair == 1:
+opcao = 0
+
+while(opcao != 4):
+    print("----------OPÇÕES----------")
+    opcao = int(input("1 - Realizar Respostas\n2 - Ver Manifestações\n3 - Ver Respostas\n4 - Sair\n"))
+        
+    if opcao == 1:
         conexao = conexaobd()
     
         while(True):
-            codigo_manifestacao = int(input("Qual o código da manifestação que você deseja responder? \n"))
+            codigo_manifestacao = int(input("\nQual o código da manifestação que você deseja responder? "))
 
             consulta = "SELECT * FROM manifestacoes WHERE id = %s"
             
@@ -59,10 +73,10 @@ while(respostaOuSair != 2):
             if (len(manifestacaoExist) > 0):
                 break
             else:
-                print("Essa manifestação não existe, digite uma manifestação válida!\n")
+                print("Essa manifestação não existe, digite uma manifestação válida!")
                 continue
 
-        resposta = str(input("Qual sua resposta para essa manifestação?\n"))
+        resposta = str(input("\nQual sua resposta para essa manifestação? "))
         
         consulta = """
                 INSERT INTO respostas
@@ -84,6 +98,15 @@ while(respostaOuSair != 2):
         
         encerrarConexao(conexao)
         
-        print("Resposta Realizada Com Sucesso!")
-
-print("Programa Finalizado Com Sucesso!")
+        print("Resposta Realizada Com Sucesso!\n")
+        
+    elif opcao == 2:
+        verManifestacoes()
+    
+    elif opcao == 3:
+        verRespostas()
+        
+    elif opcao != 5:
+        print("\nOpção Inválida\n")
+        
+print("\nPrograma Finalizado Com Sucesso!")

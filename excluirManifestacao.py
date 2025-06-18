@@ -11,10 +11,10 @@ def excluirManifestacao():
     linhasAfetadas = excluirBancoDados(conexao, consulta, [buscarManifestacaoPorCodigo])
 
     if linhasAfetadas > 0:
-        print("Manifestação excluída com sucesso!")
+        print("Manifestação excluída com sucesso!\n")
     elif linhasAfetadas == 0:
-        print("Manifestação não encontrada!")
+        print("Manifestação não encontrada!\n")
     else:
-        print("Manifestação não encontrada!")
+        print("Manifestação não encontrada!\n")
                 
     encerrarConexao(conexao)
