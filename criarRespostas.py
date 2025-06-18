@@ -4,7 +4,7 @@ from respostas import *
 from conexaobd import *
 from operacoesbd import insertNoBancoDados, listarBancoDados, atualizarBancoDados, encerrarConexao
 
-print("-----------ENTRAR NO SISTEMA-----------")
+print("-----------ENTRAR NO SISTEMA DE ADMINISTRAÇÃO-----------")
 
 while(True):
     loginOrRegister = str(input("Realizar cadastro ou fazer login? (c ou l) "))

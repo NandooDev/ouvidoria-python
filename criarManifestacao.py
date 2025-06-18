@@ -8,7 +8,7 @@ from operacoesbd import insertNoBancoDados, encerrarConexao
 
 textoAssun = ("Digite o número referente ao assunto que você deseja falar:\n-Elogio: 1\n-Denúncia: 2\n-Dúvida: 3\n")
 
-print("-----------ENTRAR NO SISTEMA-----------")
+print("-----------ENTRAR NO SISTEMA DE USUÁRIO-----------")
 
 #LOGIN OU CADASTRO DE USUARIO
 while(True):

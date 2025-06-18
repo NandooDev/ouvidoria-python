@@ -15,6 +15,6 @@ def excluirManifestacao():
     elif linhasAfetadas == 0:
         print("Manifestação não encontrada!\n")
     else:
-        print("Manifestação não encontrada!\n")
+        print("Erro!\n")
                 
     encerrarConexao(conexao)
